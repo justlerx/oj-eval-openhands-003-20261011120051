@@ -432,7 +432,7 @@ public:
             // Check if ranking changed
             bool ranking_changed = false;
             for (size_t i = 0; i < original_ranking.size(); i++) {
-                if (original_ranking[i].first != current_ranking[i].first) {
+                if (i >= current_ranking.size() || original_ranking[i].first != current_ranking[i].first) {
                     ranking_changed = true;
                     break;
                 }
@@ -453,16 +453,19 @@ public:
                     old_ranking++;
                 }
                 
-                // Find the team that was replaced
-                string replaced_team = "";
-                if (new_ranking < original_ranking.size()) {
-                    replaced_team = current_ranking[new_ranking - 1].first;
-                }
-                
-                if (!replaced_team.empty()) {
-                    ranking_changes.push_back(target_team.first + " " + replaced_team + " " + 
-                                            to_string(target_team.second->getSolvedCount()) + " " + 
-                                            to_string(target_team.second->getPenaltyTime()));
+                // Only report if team actually moved up
+                if (new_ranking < old_ranking) {
+                    // Find the team that was replaced (the one at the old position of target team)
+                    string replaced_team = "";
+                    if (old_ranking <= current_ranking.size()) {
+                        replaced_team = current_ranking[old_ranking - 1].first;
+                    }
+                    
+                    if (!replaced_team.empty() && replaced_team != target_team.first) {
+                        ranking_changes.push_back(target_team.first + " " + replaced_team + " " + 
+                                                to_string(target_team.second->getSolvedCount()) + " " + 
+                                                to_string(target_team.second->getPenaltyTime()));
+                    }
                 }
             }
             
