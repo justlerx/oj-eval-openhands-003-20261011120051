@@ -331,6 +331,7 @@ public:
     
     void updateRanking() {
         current_ranking.clear();
+        current_ranking.reserve(teams.size());
         for (auto& [name, team] : teams) {
             current_ranking.emplace_back(name, &team);
         }
